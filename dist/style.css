@@ -9,6 +9,7 @@ body {
   align-items: center;
 
   font-family: 'Patua One', serif;
+  background: #333333;
 }
 
 #canvas {

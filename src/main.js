@@ -7,7 +7,6 @@ import _ from 'lodash';
 // INPUT
 const names = [
   'Xavier Ho',
-  'Verby Noun',
   'Funkyname Happytail',
   // 'Kristina Johnson',
   // 'Florence Wang',
@@ -25,21 +24,70 @@ const margin = 150;
 const x = pos => pos * width;
 const y = pos => pos * height;
 
+var rc = [];
+
 window.setup = () => {
   canvas = createCanvas(width + margin * 2, height + margin * 2);
   canvas.id('canvas');
+
+  for (let i = 0; i < 10; i++) {
+    rc.push(random_color());
+  }
+
+  background(0, 0, 0, 0);
 };
 
 window.draw = () => {
-  background(255, 255, 255);
-
-  // Draw margin, crop markers, bleed
+  print_background();
   translate(margin, margin);
+  generate_background();
 
+  crop_marks();
+  name_contact();
+
+  preview_mask();
+};
+
+const print_background = () => {
+  const light = color(236, 237, 218);
+  const dark = color(218, 217, 224);
+  gradient(0, 0, width+margin*2, height+margin*2, light, dark, 'Y_AXIS');
+};
+
+const generate_background = () => {
+  push();
+    blendMode(DIFFERENCE);
+
+    for (let i = 0; i < 5; i++) {
+      push();
+        fill(rc[i]);
+        noStroke();
+        rotate(Math.PI / 4 + Math.PI / 128 * (i-3));
+        rect(0, 0, height / Math.sqrt(3), height / Math.sqrt(3));
+      pop();
+    }
+  pop();
+};
+
+const name_contact = () => {
+  push();
+    fill(0);
+    textSize(64);
+    textFont('Patua One');
+    textAlign(RIGHT);
+    text(name, x(0.9), y(0.4));
+
+    textSize(48);
+    text(mobile, x(0.9), y(0.6));
+    text(email, x(0.9), y(0.7));
+  pop();
+};
+
+const crop_marks = () => {
   push();
     noStroke();
-    fill(128, 255, 255);
-    rect(0, 0, width, height);
+    // fill(0.5, 0.5, 1);
+    // rect(0, 0, width, height);
     stroke(0);
     strokeWeight(1);
     line(0, -margin, 0, -50);
@@ -51,17 +99,48 @@ window.draw = () => {
     line(width, 50+height, width, margin+height);
     line(margin+width, height, width+50, height);
   pop();
+};
 
-  // Draw name and contact
+const preview_mask = () => {
   push();
-    fill(0);
-    textSize(96);
-    textFont('Patua One');
-    textAlign(CENTER);
-    text(name, x(0.5), y(0.4));
-
-    textSize(56);
-    text(mobile, x(0.5), y(0.6));
-    text(email, x(0.5), y(0.7));
+    noStroke();
+    fill(0, 0, 0, 200);
+    rect(-margin, -margin, width+margin*2, margin);
+    rect(-margin, height, width+margin*2, margin);
+    rect(-margin, 0, margin, height);
+    rect(width, 0, margin, height);
   pop();
 };
+
+// https://p5js.org/examples/color-linear-gradient.html
+const gradient = (x, y, w, h, c1, c2, axis) => {
+  push();
+    colorMode(RGB);
+    noFill();
+    if (axis === 'Y_AXIS') {  // Top to bottom gradient
+      for (var i = y; i <= y+h; i++) {
+        var inter = map(i, y, y+h, 0, 1);
+        var c = lerpColor(c1, c2, inter);
+        stroke(c);
+        line(x, i, x+w, i);
+      }
+    }
+    else if (axis === 'X_AXIS') {  // Left to right gradient
+      for (var i = x; i <= x+w; i++) {
+        var inter = map(i, x, x+w, 0, 1);
+        var c = lerpColor(c1, c2, inter);
+        stroke(c);
+        line(i, y, i, y+h);
+      }
+    }
+    colorMode(HSB, 1, 1, 1, 1);
+  pop();
+};
+
+const random_color = () => {
+  const r1 = _.random(0, 255, false),
+        r2 = _.random(0, 255, false),
+        r3 = _.random(0, 255, false);
+  return color(r1, r2, r3);
+};
+
