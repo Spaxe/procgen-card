@@ -16,15 +16,22 @@ const name = _.shuffle(names)[0];
 const mobile = `04 ${_.random(1000, 9999, false)} ${_.random(1000, 9999, false)}`;
 const email = `${name.toLowerCase().replace(' ', '.')}@${_.shuffle('abcdefghijklmnopqrstuvwxyz').slice(0, _.random(3, 10, false)).join('')}.au`;
 
+const coverage = 1; // coverage rate, 0 - 1
+
 var canvas;
 const width = 1062,
       height = 652;
 const margin = 150;
+var font;
 
 const x = pos => pos * width;
 const y = pos => pos * height;
 
 var rc = [];
+
+window.preload = () => {
+  font = loadFont('assets/PatuaOne-Regular.ttf');
+};
 
 window.setup = () => {
   canvas = createCanvas(width + margin * 2, height + margin * 2);
@@ -34,10 +41,12 @@ window.setup = () => {
     rc.push(random_color());
   }
 
-  background(0, 0, 0, 0);
+  noLoop();
 };
 
 window.draw = () => {
+  background(0, 0, 0, 0);
+
   print_background();
   translate(margin, margin);
   generate_background();
@@ -49,8 +58,8 @@ window.draw = () => {
 };
 
 const print_background = () => {
-  const light = color(236, 237, 218);
-  const dark = color(218, 217, 224);
+  const light = color(255, 244, 196);
+  const dark = color(242, 219, 152);
   gradient(0, 0, width+margin*2, height+margin*2, light, dark, 'Y_AXIS');
 };
 
@@ -58,14 +67,24 @@ const generate_background = () => {
   push();
     blendMode(DIFFERENCE);
 
-    for (let i = 0; i < 5; i++) {
-      push();
-        fill(rc[i]);
-        noStroke();
-        rotate(Math.PI / 4 + Math.PI / 128 * (i-3));
-        rect(0, 0, height / Math.sqrt(3), height / Math.sqrt(3));
-      pop();
-    }
+    // Random Spheres
+    // for (let dy = 0; dy < 12; dy++) {
+    //   for (let dx = 0; dx < 10 * coverage; dx++) {
+    //     let r = _.random(10, 500, false);
+    //     let s = _.random(1, 5, false);
+
+    //     if (Math.random() > 0.9) {
+    //       if (Math.random() > 0.6) {
+    //         noFill();
+    //       } else {
+    //         fill(32);
+    //       }
+    //       strokeWeight(s);
+    //       stroke(32);
+    //       ellipse(x(0.06 * dx), y(0.0909 * dy), r, r);
+    //     }
+    //   }
+    // }
   pop();
 };
 
@@ -73,7 +92,7 @@ const name_contact = () => {
   push();
     fill(0);
     textSize(64);
-    textFont('Patua One');
+    textFont(font);
     textAlign(RIGHT);
     text(name, x(0.9), y(0.4));
 
