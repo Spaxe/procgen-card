@@ -16,8 +16,6 @@ const name = _.shuffle(names)[0];
 const mobile = `04 ${_.random(1000, 9999, false)} ${_.random(1000, 9999, false)}`;
 const email = `${name.toLowerCase().replace(' ', '.')}@${_.shuffle('abcdefghijklmnopqrstuvwxyz').slice(0, _.random(3, 10, false)).join('')}.au`;
 
-const coverage = 1; // coverage rate, 0 - 1
-
 var canvas;
 const width = 1062,
       height = 652;
@@ -66,6 +64,60 @@ const print_background = () => {
 const generate_background = () => {
   push();
     blendMode(DIFFERENCE);
+
+    const thickness = 5;
+    const size = _.random(75, 125, false);
+    const gap = 50;
+    const offset = gap/2 - thickness/2;
+    const correction = thickness/2;
+    const shift = 5;
+
+    rotate(Math.PI / 360 * _.random(-360, 360));
+    translate(_.random(-size, size, false), _.random(-size, size, false));
+
+    for (let dy = -20; dy < 20; dy++) {
+      for (let dx = -20; dx < 20; dx++) {
+        noStroke();
+        fill(16);
+        rect(size * dx + offset - shift, size * dy - correction, size - offset*2 + shift*2, thickness);
+        rect(size * dx - correction, size * dy + offset - shift, thickness, size - offset*2 + shift*2);
+
+        noFill();
+        strokeWeight(5);
+        stroke(16);
+        ellipse(size * dx, size * dy, size/2, size/2);
+      }
+    }
+  pop();
+
+    // Random blended pixel bars
+    // const segments = 36;
+    // const thickness = height / segments;
+
+    // translate(0, thickness * 6);
+
+    // for (let dy = 0; dy < segments; dy++) {
+    //   for (let dx = 0; dx < 100 * (dy / 6); dx++) {
+    //     if (Math.random() > Math.pow(dy / 9, 0.5)) {
+    //       fill((100-dx) / 8);
+    //       noStroke();
+    //       rect(x(0.02 * dx), y(1/segments * dy), x(0.02) * _.random(1, (101-dx)/10, false), thickness);
+    //     }
+    //   }
+    // }
+
+    // translate(0, thickness * 12);
+
+    // for (let dy = 0; dy < segments; dy++) {
+    //   for (let dx = 0; dx < 25 * (dy / 6); dx++) {
+    //     if (Math.random() > Math.pow(dy / 9, 0.5)) {
+    //       fill((100-dx) / 8);
+    //       noStroke();
+    //       rect(x(0.02 * dx), y(1/segments * dy), x(0.02) * _.random(1, (101-dx)/10, false), thickness);
+    //     }
+    //   }
+    // }
+
 
     // Random Spheres
     // for (let dy = 0; dy < 12; dy++) {
