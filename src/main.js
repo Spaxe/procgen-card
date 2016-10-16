@@ -72,20 +72,50 @@ const generate_background = () => {
     const correction = thickness/2;
     const shift = 5;
 
-    rotate(Math.PI / 360 * _.random(-360, 360));
-    translate(_.random(-size, size, false), _.random(-size, size, false));
+    translate(_.random(0, size*2, false), _.random(0, size*2, false));
+    rotate(Math.PI / 360 * _.random(-90, 90));
+
+
+    push();
+      blendMode(BURN);
+      noStroke();
+      fill(200);
+      rect(-width*3, -height*2, width*5, height*2);
+      fill(180);
+      rect(-width, -height*3, width, height*5);
+      blendMode(MULTIPLY);
+      fill(160);
+      rect(-width, -height, width, height);
+
+      strokeWeight(5);
+      noFill();
+      stroke(200);
+      line(-width*2, 0, width*2, 0);
+      line(0, -height*2, 0, height*2);
+    pop();
 
     for (let dy = -20; dy < 20; dy++) {
       for (let dx = -20; dx < 20; dx++) {
-        noStroke();
-        fill(16);
-        rect(size * dx + offset - shift, size * dy - correction, size - offset*2 + shift*2, thickness);
-        rect(size * dx - correction, size * dy + offset - shift, thickness, size - offset*2 + shift*2);
 
-        noFill();
-        strokeWeight(5);
-        stroke(16);
-        ellipse(size * dx, size * dy, size/2, size/2);
+        if (dx !== 0 && dy !== 0 && Math.random() > 0.05) {
+          noStroke();
+          fill(16);
+          rect(size * dx + offset - shift, size * dy - correction, size - offset*2 + shift*2, thickness);
+          rect(size * dx - correction, size * dy + offset - shift, thickness, size - offset*2 + shift*2);
+
+          if (Math.random() > 0.5) {
+            rect(size * dx + offset - shift, size * dy - correction + size/2, size - offset*2 + shift*2, thickness);
+          } else {
+            rect(size * dx - correction + size/2, size * dy + offset - shift, thickness, size - offset*2 + shift*2);
+          }
+
+          if (Math.random() > 0.95) {
+            noFill();
+            strokeWeight(5);
+            stroke(16);
+            ellipse(size * dx, size * dy, size/3, size/3);
+          }
+        }
       }
     }
   pop();
